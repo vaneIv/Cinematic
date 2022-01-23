@@ -48,59 +48,62 @@ import com.raywenderlich.cinematic.util.MovieListClickListener
 import org.koin.android.ext.android.inject
 
 class FavoriteMoviesFragment : Fragment(R.layout.fragment_favorites) {
-  private var _binding: FragmentFavoritesBinding? = null
-  private val binding get() = _binding!!
+    private var _binding: FragmentFavoritesBinding? = null
+    private val binding get() = _binding!!
 
-  private val viewModel: FavoriteMoviesViewModel by inject()
-  private val favoritesAdapter: MoviesAdapter by inject()
+    private val viewModel: FavoriteMoviesViewModel by inject()
+    private val favoritesAdapter: MoviesAdapter by inject()
 
-  override fun onCreateView(
-      inflater: LayoutInflater,
-      container: ViewGroup?,
-      savedInstanceState: Bundle?,
-  ): View {
-    _binding = FragmentFavoritesBinding.inflate(inflater, container, false)
-    return binding.root
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    favoritesAdapter.setListener(object : MovieListClickListener {
-      override fun onMovieClicked(movie: Movie) {
-        findNavController().navigate(
-            FavoriteMoviesFragmentDirections.actionFavoriteMoviesFragmentToMovieDetailsFragment(movie.id))
-      }
-
-    })
-    binding.favoriteMoviesList.apply {
-      adapter = favoritesAdapter
-    }
-    viewModel.getFavoriteMovies()
-    attachObservers()
-  }
-
-  private fun attachObservers() {
-    viewModel.movies.observe(viewLifecycleOwner) { movies ->
-      favoritesAdapter.submitList(movies)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
+        _binding = FragmentFavoritesBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    viewModel.events.observe(viewLifecycleOwner) { event ->
-      when (event) {
-        is Events.Loading -> {
-          binding.progressBar.visibility = View.VISIBLE
-          binding.favoriteMoviesList.visibility = View.GONE
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        favoritesAdapter.setListener(object : MovieListClickListener {
+            override fun onMovieClicked(movie: Movie) {
+                findNavController().navigate(
+                    FavoriteMoviesFragmentDirections.actionFavoriteMoviesFragmentToMovieDetailsFragment(
+                        movie.id
+                    )
+                )
+            }
+
+        })
+        binding.favoriteMoviesList.apply {
+            adapter = favoritesAdapter
+        }
+        viewModel.getFavoriteMovies()
+        attachObservers()
+    }
+
+    private fun attachObservers() {
+        viewModel.movies.observe(viewLifecycleOwner) { movies ->
+            favoritesAdapter.submitList(movies)
         }
 
-        is Events.Done -> {
-          binding.progressBar.visibility = View.GONE
-          binding.favoriteMoviesList.visibility = View.VISIBLE
-        }
-      }
-    }
-  }
+        viewModel.events.observe(viewLifecycleOwner) { event ->
+            when (event) {
+                is Events.Loading -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                    binding.favoriteMoviesList.visibility = View.GONE
+                }
 
-  override fun onDestroyView() {
-    super.onDestroyView()
-    _binding = null
-  }
+                is Events.Done -> {
+                    binding.progressBar.visibility = View.GONE
+                    binding.favoriteMoviesList.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

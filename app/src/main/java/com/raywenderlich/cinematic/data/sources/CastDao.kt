@@ -42,9 +42,9 @@ import com.raywenderlich.cinematic.model.CastResponse
 @Dao
 abstract class CastDao {
 
-  @Query("SELECT * FROM castResponse WHERE :id = id")
-  abstract fun getCastDetails(id: Int): CastResponse
+    @Query("SELECT * FROM castResponse WHERE :id = id")
+    abstract fun getCastDetails(id: Int): CastResponse
 
-  @Insert(onConflict = OnConflictStrategy.REPLACE)
-  abstract fun saveCast(cast: List<CastResponse>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun saveCast(cast: List<CastResponse>)
 }

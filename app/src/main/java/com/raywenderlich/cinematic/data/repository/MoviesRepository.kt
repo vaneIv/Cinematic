@@ -40,21 +40,21 @@ import kotlinx.coroutines.flow.Flow
 
 interface MoviesRepository {
 
-  suspend fun saveMovies(movies: List<Movie>)
+    suspend fun saveMovies(movies: List<Movie>)
 
-  suspend fun deleteAllMovies()
+    suspend fun deleteAllMovies()
 
-  suspend fun getFavoriteMovies(): Flow<List<Movie>>
+    suspend fun getFavoriteMovies(): Flow<List<Movie>>
 
-  suspend fun getMovie(id: Int): Flow<Movie>
+    suspend fun getMovie(id: Int): Flow<Movie>
 
-  suspend fun getCastDetails(id: Int): List<Cast>
+    suspend fun getCastDetails(id: Int): List<Cast>
 
-  suspend fun getPopularMovies(): Flow<List<Movie>>
+    suspend fun getPopularMovies(): Flow<List<Movie>>
 
-  suspend fun setFavorite(id: Int)
+    suspend fun setFavorite(id: Int)
 
-  suspend fun removeFavorite(id: Int)
+    suspend fun removeFavorite(id: Int)
 
-  suspend fun saveCast(cast: List<CastResponse>)
+    suspend fun saveCast(cast: List<CastResponse>)
 }

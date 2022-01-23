@@ -42,34 +42,34 @@ import androidx.fragment.app.activityViewModels
 import com.raywenderlich.cinematic.databinding.FragmentSignupBinding
 
 class SignupFragment : Fragment() {
-  private val viewModel by activityViewModels<AuthViewModel>()
+    private val viewModel by activityViewModels<AuthViewModel>()
 
-  private var _binding: FragmentSignupBinding? = null
-  private val binding get() = _binding!!
+    private var _binding: FragmentSignupBinding? = null
+    private val binding get() = _binding!!
 
-  override fun onCreateView(
-      inflater: LayoutInflater, container: ViewGroup?,
-      savedInstanceState: Bundle?
-  ): View {
-    // Inflate the layout for this fragment
-    _binding = FragmentSignupBinding.inflate(inflater)
-    return binding.root
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    binding.signUpButton.setOnClickListener {
-      viewModel.onSignupPressed()
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        // Inflate the layout for this fragment
+        _binding = FragmentSignupBinding.inflate(inflater)
+        return binding.root
     }
-  }
 
-  override fun onDestroyView() {
-    super.onDestroyView()
-    _binding = null
-  }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.signUpButton.setOnClickListener {
+            viewModel.onSignupPressed()
+        }
+    }
 
-  companion object {
-    @JvmStatic
-    fun newInstance() = SignupFragment()
-  }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance() = SignupFragment()
+    }
 }

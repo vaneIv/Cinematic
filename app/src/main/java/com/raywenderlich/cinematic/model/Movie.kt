@@ -89,9 +89,9 @@ data class Movie(
     val isFavorite: Boolean = false,
 ) : Parcelable {
 
-  val rating: Float
-    get() = voteAverage.convertToFiveStarScale()
+    val rating: Float
+        get() = voteAverage.convertToFiveStarScale()
 
-  val movieInfo: String
-    get() = "${this.releaseDate.toYear()}\t\t${this.originalLanguage.toLanguageName()}\t\t${this.voteCount} ratings"
+    val movieInfo: String
+        get() = "${this.releaseDate.toYear()}\t\t${this.originalLanguage.toLanguageName()}\t\t${this.voteCount} ratings"
 }

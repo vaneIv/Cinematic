@@ -43,13 +43,13 @@ import org.koin.dsl.module
 
 val appModule = module {
 
-  viewModel { PopularMoviesViewModel(get()) }
+    viewModel { PopularMoviesViewModel(get()) }
 
-  viewModel { FavoriteMoviesViewModel(get()) }
+    viewModel { FavoriteMoviesViewModel(get()) }
 
-  viewModel { MovieDetailsViewModel(get()) }
+    viewModel { MovieDetailsViewModel(get()) }
 
-  factory { MoviesAdapter() }
+    factory { MoviesAdapter() }
 
-  factory { CastAdapter() }
+    factory { CastAdapter() }
 }

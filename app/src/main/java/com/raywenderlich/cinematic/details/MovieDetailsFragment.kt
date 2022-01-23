@@ -33,6 +33,7 @@
  */
 package com.raywenderlich.cinematic.details
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -54,106 +55,131 @@ import org.koin.android.viewmodel.ext.android.viewModel
 
 class MovieDetailsFragment : Fragment(R.layout.fragment_details) {
 
-  private var _binding: FragmentDetailsBinding? = null
-  private val binding get() = _binding!!
+    private var _binding: FragmentDetailsBinding? = null
+    private val binding get() = _binding!!
 
-  private val args: MovieDetailsFragmentArgs by navArgs()
-  private val viewModel: MovieDetailsViewModel by viewModel()
+    private val args: MovieDetailsFragmentArgs by navArgs()
+    private val viewModel: MovieDetailsViewModel by viewModel()
 
-  private val castAdapter: CastAdapter by inject()
+    private val castAdapter: CastAdapter by inject()
 
-  override fun onCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?,
-  ): View {
-    _binding = FragmentDetailsBinding.inflate(inflater, container, false)
-    return binding.root
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    binding.castList.apply {
-      adapter = castAdapter
-      layoutManager =
-        LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
+        _binding = FragmentDetailsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    args.movieId.also {
-      viewModel.getMovieDetails(it)
-      viewModel.getCast(it)
-    }
-    attachObservers()
-  }
-
-  private fun attachObservers() {
-    viewModel.movie.observe(viewLifecycleOwner) { movie ->
-      renderUi(movie)
-    }
-
-    viewModel.cast.observe(viewLifecycleOwner) { cast ->
-      castAdapter.submitList(cast)
-    }
-  }
-
-  private fun renderUi(movie: Movie) {
-    loadBackdrop(IMAGE_BASE + movie.backdropPath)
-    loadPoster(IMAGE_BASE + movie.posterPath)
-
-    binding.title.text = movie.title
-    binding.summary.text = movie.overview
-    binding.ratingValue.text = movie.rating.toString()
-    binding.movieRating.rating = movie.rating
-
-    if (viewModel.shouldAnimate) {
-      //TODO animate the summary
-    }
-
-    binding.addToFavorites.apply {
-      icon = if (movie.isFavorite) {
-        getDrawable(requireContext(), R.drawable.ic_baseline_favorite_24)
-      } else {
-        getDrawable(requireContext(), R.drawable.ic_baseline_favorite_border_24)
-      }
-      text = if (movie.isFavorite) {
-        getString(R.string.remove_from_favorites)
-      } else {
-        getString(R.string.add_to_favorites)
-      }
-      setOnClickListener {
-        if (movie.isFavorite) {
-          viewModel.unsetMovieAsFavorite(movie.id)
-        } else {
-          viewModel.setMovieAsFavorite(movie.id)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.castList.apply {
+            adapter = castAdapter
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         }
-      }
-    }
-  }
 
-  private fun loadPoster(posterUrl: String) {
-    val posterRequest = ImageRequest.Builder(requireContext())
-      .data(posterUrl)
-      .target {
-        binding.posterContainer.isVisible = true
-        binding.poster.setImageDrawable(it)
+        args.movieId.also {
+            viewModel.getMovieDetails(it)
+            viewModel.getCast(it)
+        }
+        attachObservers()
+    }
+
+    private fun attachObservers() {
+        viewModel.movie.observe(viewLifecycleOwner) { movie ->
+            renderUi(movie)
+        }
+
+        viewModel.cast.observe(viewLifecycleOwner) { cast ->
+            castAdapter.submitList(cast)
+        }
+    }
+
+    private fun renderUi(movie: Movie) {
+        loadBackdrop(IMAGE_BASE + movie.backdropPath)
+        loadPoster(IMAGE_BASE + movie.posterPath)
+
+        binding.title.text = movie.title
+        binding.summary.text = movie.overview
+        binding.ratingValue.text = movie.rating.toString()
+        binding.movieRating.rating = movie.rating
+
         if (viewModel.shouldAnimate) {
-          //TODO animate poster
+            //TODO animate the summary
         }
-      }.build()
-    requireContext().imageLoader.enqueue(posterRequest)
-  }
 
-  private fun loadBackdrop(backdropUrl: String) {
-    val posterRequest = ImageRequest.Builder(requireContext())
-      .data(backdropUrl)
-      .transformations(BlurTransformation(requireContext()))
-      .target {
-        binding.backdrop.isVisible = true
-        binding.backdrop.setImageDrawable(it)
-        if (viewModel.shouldAnimate) {
-          //TODO animate backdrop
+        binding.addToFavorites.apply {
+            icon = if (movie.isFavorite) {
+                getDrawable(requireContext(), R.drawable.ic_baseline_favorite_24)
+            } else {
+                getDrawable(requireContext(), R.drawable.ic_baseline_favorite_border_24)
+            }
+            text = if (movie.isFavorite) {
+                getString(R.string.remove_from_favorites)
+            } else {
+                getString(R.string.add_to_favorites)
+            }
+            setOnClickListener {
+                if (movie.isFavorite) {
+                    viewModel.unsetMovieAsFavorite(movie.id)
+                } else {
+                    viewModel.setMovieAsFavorite(movie.id)
+                }
+            }
         }
-      }.build()
-    requireContext().imageLoader.enqueue(posterRequest)
-  }
+    }
+
+    private fun loadPoster(posterUrl: String) {
+        val posterRequest = ImageRequest.Builder(requireContext())
+            .data(posterUrl)
+            .target {
+                binding.posterContainer.isVisible = true
+                binding.poster.setImageDrawable(it)
+                if (viewModel.shouldAnimate) {
+                    // Animate poster
+                    animatePoster()
+                }
+            }.build()
+        requireContext().imageLoader.enqueue(posterRequest)
+    }
+
+    private fun animatePoster() {
+        // Set the alpha value of posterContainer to 0.
+        binding.posterContainer.alpha = 0f
+
+        // Set up ValueAnimator.
+        //
+        // Instantiating a new ValueAnimator using the static method ofFloat.
+        val animator = ValueAnimator.ofFloat(0f, 1f)
+        animator.duration = 1000
+
+        // Adding an UpdateListener to the animator. The animator calls the update
+        // listener after every update to the animated value.
+        animator.addUpdateListener { valueAnimator ->
+            // Retrieving the current animated value from the animator and
+            // cast it to a Float.
+            val animatedValue = valueAnimator.animatedValue as Float
+            // Using the current value to set the poster’s alpha value.
+            binding.posterContainer.alpha = animatedValue
+        }
+
+        // Starting the animation
+        animator.start()
+    }
+
+    private fun loadBackdrop(backdropUrl: String) {
+        val posterRequest = ImageRequest.Builder(requireContext())
+            .data(backdropUrl)
+            .transformations(BlurTransformation(requireContext()))
+            .target {
+                binding.backdrop.isVisible = true
+                binding.backdrop.setImageDrawable(it)
+                if (viewModel.shouldAnimate) {
+                    //TODO animate backdrop
+                }
+            }.build()
+        requireContext().imageLoader.enqueue(posterRequest)
+    }
 }

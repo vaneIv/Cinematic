@@ -43,39 +43,40 @@ import kotlinx.coroutines.flow.Flow
 class MoviesDataRepository(
     private val cacheStore: MoviesCache
 ) : MoviesRepository {
-  override suspend fun saveMovies(movies: List<Movie>) {
-    cacheStore.saveMovies(movies)
-  }
 
-  override suspend fun deleteAllMovies() {
-    cacheStore.deleteAllMovies()
-  }
+    override suspend fun saveMovies(movies: List<Movie>) {
+        cacheStore.saveMovies(movies)
+    }
 
-  override suspend fun getFavoriteMovies(): Flow<List<Movie>> {
-    return cacheStore.getFavoriteMovies()
-  }
+    override suspend fun deleteAllMovies() {
+        cacheStore.deleteAllMovies()
+    }
 
-  override suspend fun getPopularMovies(): Flow<List<Movie>> {
-    return cacheStore.getPopularMovies()
-  }
+    override suspend fun getFavoriteMovies(): Flow<List<Movie>> {
+        return cacheStore.getFavoriteMovies()
+    }
 
-  override suspend fun setFavorite(id: Int) {
-    cacheStore.setFavorite(id)
-  }
+    override suspend fun getPopularMovies(): Flow<List<Movie>> {
+        return cacheStore.getPopularMovies()
+    }
 
-  override suspend fun removeFavorite(id: Int) {
-    cacheStore.removeFavorite(id)
-  }
+    override suspend fun setFavorite(id: Int) {
+        cacheStore.setFavorite(id)
+    }
 
-  override suspend fun getMovie(id: Int): Flow<Movie> {
-    return cacheStore.getMovie(id)
-  }
+    override suspend fun removeFavorite(id: Int) {
+        cacheStore.removeFavorite(id)
+    }
 
-  override suspend fun getCastDetails(id: Int): List<Cast> {
-    return cacheStore.getCastDetails(id)
-  }
+    override suspend fun getMovie(id: Int): Flow<Movie> {
+        return cacheStore.getMovie(id)
+    }
 
-  override suspend fun saveCast(cast: List<CastResponse>) {
-    cacheStore.saveCast(cast)
-  }
+    override suspend fun getCastDetails(id: Int): List<Cast> {
+        return cacheStore.getCastDetails(id)
+    }
+
+    override suspend fun saveCast(cast: List<CastResponse>) {
+        cacheStore.saveCast(cast)
+    }
 }

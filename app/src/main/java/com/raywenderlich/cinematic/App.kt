@@ -54,32 +54,32 @@ import org.koin.core.logger.Level
 @KoinApiExtension
 class App : Application(), KoinComponent {
 
-  override fun onCreate() {
-    super.onCreate()
+    override fun onCreate() {
+        super.onCreate()
 
-    startKoin {
-      androidLogger(Level.DEBUG)
-      androidContext(this@App)
-      modules(dataModule + appModule)
+        startKoin {
+            androidLogger(Level.DEBUG)
+            androidContext(this@App)
+            modules(dataModule + appModule)
+        }
+
+        prefillData()
     }
 
-    prefillData()
-  }
+    private fun prefillData() {
+        val gson = Gson()
+        val database = get<MoviesRepository>()
 
-  private fun prefillData() {
-    val gson = Gson()
-    val database = get<MoviesRepository>()
+        val moviesToken = object : TypeToken<List<Movie?>?>() {}.type
+        val castToken = object : TypeToken<List<CastResponse?>?>() {}.type
+        val movies: List<Movie> =
+            gson.fromJson(String(resources.openRawResource(R.raw.movies).readBytes()), moviesToken)
+        val cast: List<CastResponse> =
+            gson.fromJson(String(resources.openRawResource(R.raw.cast).readBytes()), castToken)
 
-    val moviesToken = object : TypeToken<List<Movie?>?>() {}.type
-    val castToken = object : TypeToken<List<CastResponse?>?>() {}.type
-    val movies: List<Movie> =
-        gson.fromJson(String(resources.openRawResource(R.raw.movies).readBytes()), moviesToken)
-    val cast: List<CastResponse> =
-        gson.fromJson(String(resources.openRawResource(R.raw.cast).readBytes()), castToken)
-
-    GlobalScope.launch {
-      database.saveMovies(movies)
-      database.saveCast(cast)
+        GlobalScope.launch {
+            database.saveMovies(movies)
+            database.saveCast(cast)
+        }
     }
-  }
 }

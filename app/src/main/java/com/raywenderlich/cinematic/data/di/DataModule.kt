@@ -47,27 +47,27 @@ import org.koin.dsl.module
 
 val dataModule = module {
 
-  fun provideDatabase(application: Application): MoviesDatabase {
-    return Room.databaseBuilder(application, MoviesDatabase::class.java, "movies.db")
-        .fallbackToDestructiveMigration()
-        .build()
-  }
+    fun provideDatabase(application: Application): MoviesDatabase {
+        return Room.databaseBuilder(application, MoviesDatabase::class.java, "movies.db")
+            .fallbackToDestructiveMigration()
+            .build()
+    }
 
-  fun provideMoviesDao(database: MoviesDatabase): MoviesDao {
-    return database.moviesDao
-  }
+    fun provideMoviesDao(database: MoviesDatabase): MoviesDao {
+        return database.moviesDao
+    }
 
-  fun provideCastDao(database: MoviesDatabase): CastDao {
-    return database.castDao
-  }
+    fun provideCastDao(database: MoviesDatabase): CastDao {
+        return database.castDao
+    }
 
-  single { provideDatabase(androidApplication()) }
+    single { provideDatabase(androidApplication()) }
 
-  single { provideMoviesDao(get()) }
+    single { provideMoviesDao(get()) }
 
-  single { provideCastDao(get()) }
+    single { provideCastDao(get()) }
 
-  factory<MoviesCache> { MovieCacheStore(get(), get()) }
+    factory<MoviesCache> { MovieCacheStore(get(), get()) }
 
-  factory<MoviesRepository> { MoviesDataRepository(get()) }
+    factory<MoviesRepository> { MoviesDataRepository(get()) }
 }

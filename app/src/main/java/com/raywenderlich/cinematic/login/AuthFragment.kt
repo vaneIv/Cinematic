@@ -42,37 +42,37 @@ import androidx.fragment.app.activityViewModels
 import com.raywenderlich.cinematic.databinding.FragmentAuthBinding
 
 class AuthFragment : Fragment() {
-  private val viewModel by activityViewModels<AuthViewModel>()
+    private val viewModel by activityViewModels<AuthViewModel>()
 
-  private var _binding: FragmentAuthBinding? = null
-  private val binding get() = _binding!!
+    private var _binding: FragmentAuthBinding? = null
+    private val binding get() = _binding!!
 
-  override fun onCreateView(
-      inflater: LayoutInflater, container: ViewGroup?,
-      savedInstanceState: Bundle?
-  ): View {
-    // Inflate the layout for this fragment
-    _binding = FragmentAuthBinding.inflate(inflater)
-    return binding.root
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    binding.signIn.setOnClickListener {
-      viewModel.onSignInPressed()
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        // Inflate the layout for this fragment
+        _binding = FragmentAuthBinding.inflate(inflater)
+        return binding.root
     }
-    binding.newSignUp.setOnClickListener {
-      viewModel.onNewUserPressed()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.signIn.setOnClickListener {
+            viewModel.onSignInPressed()
+        }
+        binding.newSignUp.setOnClickListener {
+            viewModel.onNewUserPressed()
+        }
     }
-  }
 
-  override fun onDestroyView() {
-    super.onDestroyView()
-    _binding = null
-  }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
-  companion object {
-    @JvmStatic
-    fun newInstance() = AuthFragment()
-  }
+    companion object {
+        @JvmStatic
+        fun newInstance() = AuthFragment()
+    }
 }

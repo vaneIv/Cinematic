@@ -47,29 +47,29 @@ import com.raywenderlich.cinematic.util.Constants.IMAGE_BASE
 
 class CastAdapter : ListAdapter<Cast, CastAdapter.CastViewHolder>(CastDiffCallback()) {
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CastViewHolder {
-    val binding = ItemCastBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-    return CastViewHolder(binding)
-  }
-
-  override fun onBindViewHolder(holder: CastViewHolder, position: Int) {
-    holder.bind(getItem(position))
-  }
-
-  inner class CastViewHolder(val binding: ItemCastBinding) :
-    RecyclerView.ViewHolder(binding.root) {
-    fun bind(cast: Cast) {
-      val context = binding.root.context
-
-      val imageRequest = ImageRequest.Builder(context)
-        .data(IMAGE_BASE + cast.profilePath)
-        .transformations(CircleCropTransformation())
-        .target {
-          binding.castImage.setImageDrawable(it)
-        }.build()
-
-      context.imageLoader.enqueue(imageRequest)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CastViewHolder {
+        val binding = ItemCastBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return CastViewHolder(binding)
     }
 
-  }
+    override fun onBindViewHolder(holder: CastViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
+
+    inner class CastViewHolder(val binding: ItemCastBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(cast: Cast) {
+            val context = binding.root.context
+
+            val imageRequest = ImageRequest.Builder(context)
+                .data(IMAGE_BASE + cast.profilePath)
+                .transformations(CircleCropTransformation())
+                .target {
+                    binding.castImage.setImageDrawable(it)
+                }.build()
+
+            context.imageLoader.enqueue(imageRequest)
+        }
+
+    }
 }

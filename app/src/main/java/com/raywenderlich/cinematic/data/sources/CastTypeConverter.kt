@@ -40,18 +40,18 @@ import com.raywenderlich.cinematic.model.Cast
 
 class CastTypeConverter {
 
-  @TypeConverter
-  fun fromCast(cast: List<Cast>): String {
-    return Gson().toJson(cast)
-  }
-
-  @TypeConverter
-  fun toCast(cast: String?): List<Cast> {
-    val listType = object : TypeToken<List<Cast?>?>() {}.type
-    return try {
-      Gson().fromJson(cast, listType)
-    } catch (error: Error) {
-      emptyList()
+    @TypeConverter
+    fun fromCast(cast: List<Cast>): String {
+        return Gson().toJson(cast)
     }
-  }
+
+    @TypeConverter
+    fun toCast(cast: String?): List<Cast> {
+        val listType = object : TypeToken<List<Cast?>?>() {}.type
+        return try {
+            Gson().fromJson(cast, listType)
+        } catch (error: Error) {
+            emptyList()
+        }
+    }
 }
