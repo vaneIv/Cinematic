@@ -38,6 +38,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.OvershootInterpolator
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -154,6 +155,9 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_details) {
         // Instantiating a new ValueAnimator using the static method ofFloat.
         val animator = ValueAnimator.ofFloat(0f, 1f)
         animator.duration = 1000
+
+        // Adding an interpolator to the poster.
+        animator.interpolator = OvershootInterpolator()
 
         // Adding an UpdateListener to the animator. The animator calls the update
         // listener after every update to the animated value.
