@@ -33,6 +33,7 @@
  */
 package com.raywenderlich.cinematic.details
 
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -109,7 +110,7 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_details) {
         binding.movieRating.rating = movie.rating
 
         if (viewModel.shouldAnimate) {
-            //TODO animate the summary
+            animateText()
         }
 
         binding.addToFavorites.apply {
@@ -225,5 +226,24 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_details) {
 
         // Starting the animation.
         animator.start()
+    }
+
+    private fun animateText() {
+        // Instantiating ObjectAnimator using the static function ofFloat(). Unlike
+        // ValueAnimator, the object takes two additional arguments: the view you want to
+        // animate, which is the summary TextView in this case, and the property of the view
+        // you wish to animate. Here, it’s "alpha". Make sure you specify the name
+        // correctly, or the animation might not work.
+        val objectAnimator = ObjectAnimator.ofFloat(
+            binding.summary,
+            "alpha",
+            0f,
+            1f
+        )
+
+        // Setting the duration for this animation to 1,000 milliseconds(one second),
+        // and start the animation.
+        objectAnimator.duration = 1000
+        objectAnimator.start()
     }
 }
