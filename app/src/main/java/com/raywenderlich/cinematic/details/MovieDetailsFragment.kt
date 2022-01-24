@@ -38,6 +38,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.core.view.isVisible
@@ -187,9 +188,42 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_details) {
                 binding.backdrop.isVisible = true
                 binding.backdrop.setImageDrawable(it)
                 if (viewModel.shouldAnimate) {
-                    //TODO animate backdrop
+                    // Animate backdrop
+                    animateBackdrop()
                 }
             }.build()
         requireContext().imageLoader.enqueue(posterRequest)
+    }
+
+    private fun animateBackdrop() {
+        // Extracting the backdrop ImageView’s current y position and assigned it to a
+        // new finalYPosition.
+        val finalYPosition = binding.backdrop.y
+
+        // Position to offset the default y position of the backdrop image
+        // by 40 pixels and assigned it to the backdrop.
+        val startPosition = finalYPosition + 40
+        binding.backdrop.y = startPosition
+
+        // Instantiating a new ValueAnimator using the static method ofFloat
+        // and specified the start and end values via the startYPosition and
+        // finalYPosition properties.
+        val animator = ValueAnimator.ofFloat(startPosition, finalYPosition)
+
+        // Assigning 1000 milliseconds for the animation duration and using a
+        // DecelerateInterpolator.
+        animator.duration = 1000
+        animator.interpolator = DecelerateInterpolator()
+
+        // This listener gets the current animatedValue from the animator
+        // and casts it to a Float. It then uses the current value to set
+        // the backdrop’s y translation value.
+        animator.addUpdateListener { valueAnimator ->
+            val animatedValue = valueAnimator.animatedValue as Float
+            binding.backdrop.translationY = animatedValue
+        }
+
+        // Starting the animation.
+        animator.start()
     }
 }
