@@ -33,8 +33,11 @@
  */
 package com.raywenderlich.cinematic.details
 
+import android.animation.ObjectAnimator
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
+import android.widget.ImageView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.imageLoader
@@ -66,10 +69,23 @@ class CastAdapter : ListAdapter<Cast, CastAdapter.CastViewHolder>(CastDiffCallba
                 .transformations(CircleCropTransformation())
                 .target {
                     binding.castImage.setImageDrawable(it)
+                    animateImage(binding.castImage)
                 }.build()
 
             context.imageLoader.enqueue(imageRequest)
         }
 
+        private fun animateImage(castImage: ImageView) {
+            val objectAnimator = ObjectAnimator.ofFloat(
+                castImage,
+                "alpha",
+                0f,
+                1f
+            )
+
+            objectAnimator.duration = 1500
+            objectAnimator.interpolator = AccelerateInterpolator()
+            objectAnimator.start()
+        }
     }
 }
