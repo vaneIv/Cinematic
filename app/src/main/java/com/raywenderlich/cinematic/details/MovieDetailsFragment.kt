@@ -165,8 +165,14 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_details) {
             // Retrieving the current animated value from the animator and
             // cast it to a Float.
             val animatedValue = valueAnimator.animatedValue as Float
+
             // Using the current value to set the poster’s alpha value.
             binding.posterContainer.alpha = animatedValue
+
+            // Animating the scale of the view over time. It will start at a
+            // scale of 0 and gradually scale up to 1.
+            binding.posterContainer.scaleX = animatedValue
+            binding.posterContainer.scaleY = animatedValue
         }
 
         // Starting the animation
