@@ -111,7 +111,13 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_details) {
         binding.ratingValue.text = movie.rating.toString()
         binding.movieRating.rating = movie.rating
 
-        if (viewModel.shouldAnimate) animateText()
+        if (viewModel.shouldAnimate) {
+            animateText(binding.summary)
+            animateText(binding.title)
+            animateText(binding.ratingValue)
+            animateText(binding.movieRating)
+            animateText(binding.overviewHeader)
+        }
 
         binding.addToFavorites.apply {
             icon = if (movie.isFavorite) {
@@ -184,7 +190,7 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_details) {
         }
     }
 
-    private fun animateText() {
+    private fun animateText(view: View) {
         // Loads the animation using AnimatorInflater.loadAnimator().
         val textAnimation = AnimatorInflater.loadAnimator(
             requireContext(),
@@ -192,7 +198,7 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_details) {
         ) as ObjectAnimator
 
         // Sets the summary TextView as the target for the animation.
-        textAnimation.target = binding.summary
+        textAnimation.target = view
 
         // Starts the animator.
         textAnimation.start()
