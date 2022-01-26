@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <set xmlns:android="http://schemas.android.com/apk/res/android">
     <!--The alpha tag creates AlphaAnimation, which governs your view’s alpha. Since you
-want to fade the view in, you set fromAlpha to 0.0 and toAlpha to 1.0. That means
-the view goes from being fully invisible (transparent) to fully visible (opaque). You
-also set the duration to 150 milliseconds.-->
+    want to fade the view in, you set fromAlpha to 0.0 and toAlpha to 1.0. That means
+    the view goes from being fully invisible (transparent) to fully visible (opaque). You
+    also set the duration to 150 milliseconds.-->
     <alpha
         android:duration="150"
         android:fromAlpha="0.0"
         android:toAlpha="1.0" />
+
+    <!--In this case, you instruct the translation animation to move the view from a Y-delta
+    of 100% of the screen size to a Y-delta of 0. 0 represents the top of the screen, so
+    you’re moving the view from the bottom of the screen up to the top. That is, the view
+    is sliding up from the bottom.-->
+    <translate
+        android:duration="300"
+        android:fromYDelta="100%p"
+        android:toYDelta="0" />
 
 </set>
