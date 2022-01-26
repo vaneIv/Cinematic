@@ -34,6 +34,7 @@
 package com.raywenderlich.cinematic.details
 
 import android.animation.AnimatorInflater
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.os.Bundle
@@ -168,25 +169,17 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_details) {
     }
 
     private fun animatePoster() {
-        // Loads the animation using AnimatorInflater.loadAnimator(), then casts it to
-        // a ValueAnimator. loadAnimator() returns an Animator object which is why the
-        // cast is needed.
+        // Loads the animator using AnimatorInflater.loadAnimator() and casts it to an
+        // AnimatorSet.
         val animation = AnimatorInflater.loadAnimator(
             requireContext(),
-            R.animator.poster_animation
-        ) as ValueAnimator
+            R.animator.poster_animator_set
+        ) as AnimatorSet
 
+        // Sets the posterContainer view as the target for the AnimatorSet and starts the
+        // animation.
         animation.apply {
-            // Adds updateListener to the animator and updates the alpha, scaleX and
-            // scaleY properties.
-            addUpdateListener { animation ->
-                val animatedValue = animation.animatedValue as Float
-                binding.posterContainer.alpha = animatedValue
-                binding.posterContainer.scaleX = animatedValue
-                binding.posterContainer.scaleY = animatedValue
-            }
-
-            // Starts the animation.
+            setTarget(binding.posterContainer)
             start()
         }
     }
