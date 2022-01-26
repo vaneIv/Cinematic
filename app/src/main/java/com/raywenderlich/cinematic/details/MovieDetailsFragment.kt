@@ -33,14 +33,10 @@
  */
 package com.raywenderlich.cinematic.details
 
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.DecelerateInterpolator
-import android.view.animation.OvershootInterpolator
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -53,7 +49,6 @@ import com.raywenderlich.cinematic.R
 import com.raywenderlich.cinematic.databinding.FragmentDetailsBinding
 import com.raywenderlich.cinematic.model.Movie
 import com.raywenderlich.cinematic.util.Constants.IMAGE_BASE
-import com.raywenderlich.cinematic.util.Events
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -92,20 +87,13 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_details) {
     }
 
     private fun attachObservers() {
-        viewModel.movie.observe(viewLifecycleOwner) { movie ->
+
+        viewModel.movie.observe(viewLifecycleOwner, { movie ->
             renderUi(movie)
-        }
+        })
 
-        viewModel.cast.observe(viewLifecycleOwner) { cast ->
+        viewModel.cast.observe(viewLifecycleOwner, { cast ->
             castAdapter.submitList(cast)
-        }
-
-        viewModel.events.observe(viewLifecycleOwner, { event ->
-            when (event) {
-                is Events.Loading -> {
-                    binding.addToFavorites.showProgress()
-                }
-            }
         })
     }
 
@@ -118,20 +106,25 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_details) {
         binding.ratingValue.text = movie.rating.toString()
         binding.movieRating.rating = movie.rating
 
-        if (viewModel.shouldAnimate) {
-            animateText(binding.title)
-            animateText(binding.summary)
-            animateText(binding.ratingValue)
-            animateText(binding.movieRating)
-        }
+        if (viewModel.shouldAnimate) animateText()
 
-        binding.addToFavorites.setFavorite(movie.isFavorite)
-
-        binding.addToFavorites.setOnFavoriteClickListener {
-            if (movie.isFavorite) {
-                viewModel.unsetMovieAsFavorite(movie.id)
+        binding.addToFavorites.apply {
+            icon = if (movie.isFavorite) {
+                getDrawable(requireContext(), R.drawable.ic_baseline_favorite_24)
             } else {
-                viewModel.setMovieAsFavorite(movie.id)
+                getDrawable(requireContext(), R.drawable.ic_baseline_favorite_border_24)
+            }
+            text = if (movie.isFavorite) {
+                getString(R.string.remove_from_favorites)
+            } else {
+                getString(R.string.add_to_favorites)
+            }
+            setOnClickListener {
+                if (movie.isFavorite) {
+                    viewModel.unsetMovieAsFavorite(movie.id)
+                } else {
+                    viewModel.setMovieAsFavorite(movie.id)
+                }
             }
         }
     }
@@ -142,45 +135,9 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_details) {
             .target {
                 binding.posterContainer.isVisible = true
                 binding.poster.setImageDrawable(it)
-                if (viewModel.shouldAnimate) {
-                    // Animate poster
-                    animatePoster()
-                }
+                if (viewModel.shouldAnimate) animatePoster()
             }.build()
         requireContext().imageLoader.enqueue(posterRequest)
-    }
-
-    private fun animatePoster() {
-        // Set the alpha value of posterContainer to 0.
-        binding.posterContainer.alpha = 0f
-
-        // Set up ValueAnimator.
-        //
-        // Instantiating a new ValueAnimator using the static method ofFloat.
-        val animator = ValueAnimator.ofFloat(0f, 1f)
-        animator.duration = 1000
-
-        // Adding an interpolator to the poster.
-        animator.interpolator = OvershootInterpolator()
-
-        // Adding an UpdateListener to the animator. The animator calls the update
-        // listener after every update to the animated value.
-        animator.addUpdateListener { valueAnimator ->
-            // Retrieving the current animated value from the animator and
-            // cast it to a Float.
-            val animatedValue = valueAnimator.animatedValue as Float
-
-            // Using the current value to set the poster’s alpha value.
-            binding.posterContainer.alpha = animatedValue
-
-            // Animating the scale of the view over time. It will start at a
-            // scale of 0 and gradually scale up to 1.
-            binding.posterContainer.scaleX = animatedValue
-            binding.posterContainer.scaleY = animatedValue
-        }
-
-        // Starting the animation
-        animator.start()
     }
 
     private fun loadBackdrop(backdropUrl: String) {
@@ -190,62 +147,20 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_details) {
             .target {
                 binding.backdrop.isVisible = true
                 binding.backdrop.setImageDrawable(it)
-                if (viewModel.shouldAnimate) {
-                    // Animate backdrop
-                    animateBackdrop()
-                }
+                if (viewModel.shouldAnimate) animateBackdrop()
             }.build()
         requireContext().imageLoader.enqueue(posterRequest)
     }
 
     private fun animateBackdrop() {
-        // Extracting the backdrop ImageView’s current y position and assigned it to a
-        // new finalYPosition.
-        val finalYPosition = binding.backdrop.y
-
-        // Position to offset the default y position of the backdrop image
-        // by 40 pixels and assigned it to the backdrop.
-        val startPosition = finalYPosition + 40
-        binding.backdrop.y = startPosition
-
-        // Instantiating a new ValueAnimator using the static method ofFloat
-        // and specified the start and end values via the startYPosition and
-        // finalYPosition properties.
-        val animator = ValueAnimator.ofFloat(startPosition, finalYPosition)
-
-        // Assigning 1000 milliseconds for the animation duration and using a
-        // DecelerateInterpolator.
-        animator.duration = 1000
-        animator.interpolator = DecelerateInterpolator()
-
-        // This listener gets the current animatedValue from the animator
-        // and casts it to a Float. It then uses the current value to set
-        // the backdrop’s y translation value.
-        animator.addUpdateListener { valueAnimator ->
-            val animatedValue = valueAnimator.animatedValue as Float
-            binding.backdrop.translationY = animatedValue
-        }
-
-        // Starting the animation.
-        animator.start()
+        //TODO animate backdrop
     }
 
-    private fun animateText(view: View) {
-        // Instantiating ObjectAnimator using the static function ofFloat(). Unlike
-        // ValueAnimator, the object takes two additional arguments: the view you want to
-        // animate, which is the summary TextView in this case, and the property of the view
-        // you wish to animate. Here, it’s "alpha". Make sure you specify the name
-        // correctly, or the animation might not work.
-        val objectAnimator = ObjectAnimator.ofFloat(
-            view,
-            "alpha",
-            0f,
-            1f
-        )
+    private fun animatePoster() {
+        //TODO animate poster
+    }
 
-        // Setting the duration for this animation to 1,500 milliseconds(one and a half second),
-        // and start the animation.
-        objectAnimator.duration = 1500
-        objectAnimator.start()
+    private fun animateText() {
+        //TODO animate summary text
     }
 }
