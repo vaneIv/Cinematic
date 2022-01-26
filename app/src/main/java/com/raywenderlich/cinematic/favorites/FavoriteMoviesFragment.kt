@@ -75,9 +75,11 @@ class FavoriteMoviesFragment : Fragment(R.layout.fragment_favorites) {
             }
 
         })
+
         binding.favoriteMoviesList.apply {
             adapter = favoritesAdapter
         }
+
         viewModel.getFavoriteMovies()
         attachObservers()
     }

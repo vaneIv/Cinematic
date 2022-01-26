@@ -88,6 +88,7 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_details) {
             viewModel.getMovieDetails(it)
             viewModel.getCast(it)
         }
+
         attachObservers()
     }
 

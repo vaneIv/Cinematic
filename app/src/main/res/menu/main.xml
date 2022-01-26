@@ -8,6 +8,7 @@
         android:icon="@drawable/ic_baseline_whatshot_24"
         android:title="@string/popular"
         app:showAsAction="ifRoom" />
+    
     <item
         android:id="@+id/favoriteMoviesFragment"
         android:enabled="true"

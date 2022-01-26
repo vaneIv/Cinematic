@@ -45,6 +45,7 @@ class MovieCacheStore constructor(
     private val moviesDao: MoviesDao,
     private val castDao: CastDao
 ) : MoviesCache {
+
     override suspend fun saveMovies(movies: List<Movie>) {
         moviesDao.saveAllMovies(movies)
     }

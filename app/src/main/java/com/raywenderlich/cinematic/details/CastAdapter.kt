@@ -43,6 +43,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.imageLoader
+import coil.load
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.raywenderlich.cinematic.R
@@ -65,29 +66,35 @@ class CastAdapter : ListAdapter<Cast, CastAdapter.CastViewHolder>(CastDiffCallba
     inner class CastViewHolder(val binding: ItemCastBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(cast: Cast) {
-            val context = binding.root.context
 
-            val imageRequest = ImageRequest.Builder(context)
-                .data(IMAGE_BASE + cast.profilePath)
-                .transformations(CircleCropTransformation())
-                .target {
-                    binding.castImage.setImageDrawable(it)
-                    animateImage(binding.castImage)
-                }.build()
+            binding.castImage.load(IMAGE_BASE + cast.profilePath) {
+                crossfade(true)
+                transformations(CircleCropTransformation())
+            }
 
-            context.imageLoader.enqueue(imageRequest)
+//            val context = binding.root.context
+//
+//            val imageRequest = ImageRequest.Builder(context)
+//                .data(IMAGE_BASE + cast.profilePath)
+//                .transformations(CircleCropTransformation())
+//                .target {
+//                    binding.castImage.setImageDrawable(it)
+//                    animateImage(binding.castImage)
+//                }.build()
+//
+//            context.imageLoader.enqueue(imageRequest)
         }
 
-        private fun animateImage(imageView: ImageView) {
-            // Loads the animation using AnimatorInflater.loadAnimator().
-            val imageAnimation = AnimatorInflater.loadAnimator(
-                binding.root.context,
-                R.animator.image_animation
-            ) as ObjectAnimator
-
-            imageAnimation.target = imageView
-
-            imageAnimation.start()
-        }
+//        private fun animateImage(imageView: ImageView) {
+//            // Loads the animation using AnimatorInflater.loadAnimator().
+//            val imageAnimation = AnimatorInflater.loadAnimator(
+//                binding.root.context,
+//                R.animator.image_animation
+//            ) as ObjectAnimator
+//
+//            imageAnimation.target = imageView
+//
+//            imageAnimation.start()
+//        }
     }
 }
