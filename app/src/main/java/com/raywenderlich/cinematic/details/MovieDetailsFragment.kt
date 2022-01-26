@@ -34,6 +34,7 @@
 package com.raywenderlich.cinematic.details
 
 import android.animation.AnimatorInflater
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -191,6 +192,16 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_details) {
     }
 
     private fun animateText() {
-        //TODO animate summary text
+        // Loads the animation using AnimatorInflater.loadAnimator().
+        val textAnimation = AnimatorInflater.loadAnimator(
+            requireContext(),
+            R.animator.text_animation
+        ) as ObjectAnimator
+
+        // Sets the summary TextView as the target for the animation.
+        textAnimation.target = binding.summary
+
+        // Starts the animator.
+        textAnimation.start()
     }
 }
