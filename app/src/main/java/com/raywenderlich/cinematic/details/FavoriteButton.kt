@@ -1,5 +1,6 @@
 package com.raywenderlich.cinematic.details
 
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
@@ -15,7 +16,8 @@ import com.raywenderlich.cinematic.util.DisplayMetricsUtil
 
 class FavoriteButton @JvmOverloads constructor(
     context: Context,
-    attrs: AttributeSet? = null, defStyle: Int = 0
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0
 ) : ConstraintLayout(context, attrs, defStyle) {
 
     private val binding: ViewFavoriteButtonBinding =
@@ -65,10 +67,10 @@ class FavoriteButton @JvmOverloads constructor(
 
             isClickable = false
             isFocusable = false
-        }
 
-        // animate button
-        animateButton()
+            // animate button
+            animateButton()
+        }
     }
 
     private fun animateButton() {
@@ -87,9 +89,19 @@ class FavoriteButton @JvmOverloads constructor(
             initialWidth,
             finalWidth
         )
+        // Creating an ObjectAnimator instance using ofFloat. You then supplied the
+        // property to animate — in this case, alpha — along with the start and final values for
+        // the animation.
+        val alphaAnimator = ObjectAnimator.ofFloat(
+            binding.progressBar,
+            "alpha",
+            0f,
+            1f
+        )
 
         // Assigning a 1,000 millisecond duration to the animator.
         widthAnimator.duration = 1000
+        alphaAnimator.duration = 1000
 
         // Adding an updateListener to the animator and assign the animatedValue as the
         // width of the button.
@@ -98,9 +110,22 @@ class FavoriteButton @JvmOverloads constructor(
                 this.width = it.animatedValue as Int
             }
         }
+        // Adding an updateListener for the animation and updated the progressBar alpha
+        // value based on the animated value.
+        alphaAnimator.addUpdateListener {
+            binding.progressBar.alpha = it.animatedValue as Float
+        }
+        // Preparing the progressBar for the animation by making it visible and turning
+        // its initial alpha down to 0.
+        binding.progressBar.apply {
+            alpha = 0f
+            isVisible = true
+        }
+
 
         // Starting the animation.
         widthAnimator.start()
+        alphaAnimator.start()
     }
 
     private fun hideProgress() {

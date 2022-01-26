@@ -38,6 +38,7 @@ import com.raywenderlich.cinematic.data.sources.MoviesCache
 import com.raywenderlich.cinematic.model.Cast
 import com.raywenderlich.cinematic.model.CastResponse
 import com.raywenderlich.cinematic.model.Movie
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 
 class MoviesDataRepository(
@@ -61,10 +62,14 @@ class MoviesDataRepository(
     }
 
     override suspend fun setFavorite(id: Int) {
+        //Simulated delay to demonstrate a long running task
+        delay(2000)
         cacheStore.setFavorite(id)
     }
 
     override suspend fun removeFavorite(id: Int) {
+        //Simulated delay to demonstrate a long running task
+        delay(2000)
         cacheStore.removeFavorite(id)
     }
 

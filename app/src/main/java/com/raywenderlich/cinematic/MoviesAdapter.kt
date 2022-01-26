@@ -78,6 +78,4 @@ class MoviesAdapter : ListAdapter<Movie, MoviesAdapter.MoviesViewHolder>(MoviesD
             }
         }
     }
-
-
 }
