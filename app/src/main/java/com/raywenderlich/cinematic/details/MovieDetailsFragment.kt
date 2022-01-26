@@ -37,6 +37,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -153,7 +154,14 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_details) {
     }
 
     private fun animateBackdrop() {
-        //TODO animate backdrop
+        // Loads the animation file using AnimationUtils.loadAnimation().
+        val animation = AnimationUtils.loadAnimation(
+            requireContext(),
+            // Starts the animation on the backdrop.
+            R.anim.backdrop_animation
+        )
+
+        binding.backdrop.startAnimation(animation)
     }
 
     private fun animatePoster() {
