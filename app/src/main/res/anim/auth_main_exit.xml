@@ -12,7 +12,7 @@
     <translate
         android:duration="@android:integer/config_mediumAnimTime"
         android:fromYDelta="0.0"
-        android:toYDelta="20.0p" />
+        android:toYDelta="20.0%p" />
 
     <!--Here’s a breakdown of what’s going on:
         • The scale animation scales a view up or down on both the X- and Y-axes. Here,
