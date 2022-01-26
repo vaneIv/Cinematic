@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<set xmlns:android="http://schemas.android.com/apk/res/android">
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:startOffset="200"
+    android:interpolator="@android:anim/accelerate_decelerate_interpolator">
     <!--The alpha tag creates AlphaAnimation, which governs your view’s alpha. Since you
     want to fade the view in, you set fromAlpha to 0.0 and toAlpha to 1.0. That means
     the view goes from being fully invisible (transparent) to fully visible (opaque). You
