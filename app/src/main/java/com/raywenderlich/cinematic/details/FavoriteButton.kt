@@ -6,8 +6,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.OvershootInterpolator
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.animation.doOnEnd
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import com.raywenderlich.cinematic.R
@@ -22,6 +24,8 @@ class FavoriteButton @JvmOverloads constructor(
 
     private val binding: ViewFavoriteButtonBinding =
         ViewFavoriteButtonBinding.inflate(LayoutInflater.from(context), this)
+
+    private val animators = mutableListOf<ValueAnimator>()
 
     init {
         layoutParams = LayoutParams(
@@ -83,6 +87,8 @@ class FavoriteButton @JvmOverloads constructor(
         val initialWidth = binding.favoriteButton.measuredWidth
         val finalWidth = binding.favoriteButton.measuredHeight
 
+        val initialTextSize = binding.favoriteButton.textSize
+
         // Instantiate a ValueAnimator using the static ofInt, then pass the intialWidth
         // and finalWidth to it.
         val widthAnimator = ValueAnimator.ofInt(
@@ -98,10 +104,21 @@ class FavoriteButton @JvmOverloads constructor(
             0f,
             1f
         )
+        // Created a ValueAnimator using the static ofFloat, then passed it the
+        // initialTextSize and a final text size value of 0.
+        val textSizeAnimator = ValueAnimator.ofFloat(
+            initialTextSize,
+            0f
+        )
 
         // Assigning a 1,000 millisecond duration to the animator.
         widthAnimator.duration = 1000
         alphaAnimator.duration = 1000
+        textSizeAnimator.apply {
+            // Adding an OvershootInterpolator to the animator.
+            interpolator = OvershootInterpolator()
+            duration = 1000
+        }
 
         // Adding an updateListener to the animator and assign the animatedValue as the
         // width of the button.
@@ -115,6 +132,14 @@ class FavoriteButton @JvmOverloads constructor(
         alphaAnimator.addUpdateListener {
             binding.progressBar.alpha = it.animatedValue as Float
         }
+        // This code assigned an updateListener to the animator and updated the text size of
+        // the button using animatedValue. Since the text size needs to be an sp value, you
+        // have to divide the animated value by the screen density.
+        textSizeAnimator.addUpdateListener {
+            binding.favoriteButton.textSize =
+                (it.animatedValue as Float) / resources.displayMetrics.density
+        }
+
         // Preparing the progressBar for the animation by making it visible and turning
         // its initial alpha down to 0.
         binding.progressBar.apply {
@@ -125,7 +150,16 @@ class FavoriteButton @JvmOverloads constructor(
 
         // Starting the animation.
         widthAnimator.start()
+        textSizeAnimator.start()
         alphaAnimator.start()
+
+        animators.addAll(
+            listOf(
+                widthAnimator,
+                alphaAnimator,
+                textSizeAnimator
+            )
+        )
     }
 
     private fun hideProgress() {
@@ -135,8 +169,19 @@ class FavoriteButton @JvmOverloads constructor(
             isClickable = true
             isFocusable = true
         }
+        // reverse the animations
+        reverseAnimation()
+    }
 
-        //TODO reverse the animations
+    private fun reverseAnimation() {
+        animators.forEach { animation ->
+            animation.reverse()
+            if (animators.indexOf(animation) == animators.lastIndex) {
+                animation.doOnEnd {
+                    animators.clear()
+                }
+            }
+        }
     }
 
 }
