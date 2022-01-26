@@ -60,10 +60,10 @@ class MovieDetailsViewModel constructor(private val repository: MoviesRepository
         get() = _shouldAnimate
 
     fun getMovieDetails(id: Int) {
-        _events.value = Events.Loading
         viewModelScope.launch(Dispatchers.IO) {
             repository.getMovie(id).collect { movie ->
                 withContext(Dispatchers.Main) {
+                    _events.value = Events.Done
                     _movie.value = movie
                 }
             }
@@ -83,6 +83,7 @@ class MovieDetailsViewModel constructor(private val repository: MoviesRepository
     }
 
     fun setMovieAsFavorite(id: Int) {
+        _events.value = Events.Loading
         viewModelScope.launch(Dispatchers.IO) {
             repository.setFavorite(id)
             _shouldAnimate = false
@@ -90,6 +91,7 @@ class MovieDetailsViewModel constructor(private val repository: MoviesRepository
     }
 
     fun unsetMovieAsFavorite(id: Int) {
+        _events.value = Events.Loading
         viewModelScope.launch(Dispatchers.IO) {
             repository.removeFavorite(id)
             _shouldAnimate = false

@@ -53,6 +53,7 @@ import com.raywenderlich.cinematic.R
 import com.raywenderlich.cinematic.databinding.FragmentDetailsBinding
 import com.raywenderlich.cinematic.model.Movie
 import com.raywenderlich.cinematic.util.Constants.IMAGE_BASE
+import com.raywenderlich.cinematic.util.Events
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -98,6 +99,14 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_details) {
         viewModel.cast.observe(viewLifecycleOwner) { cast ->
             castAdapter.submitList(cast)
         }
+
+        viewModel.events.observe(viewLifecycleOwner, { event ->
+            when (event) {
+                is Events.Loading -> {
+                    binding.addToFavorites.showProgress()
+                }
+            }
+        })
     }
 
     private fun renderUi(movie: Movie) {
@@ -116,23 +125,13 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_details) {
             animateText(binding.movieRating)
         }
 
-        binding.addToFavorites.apply {
-            icon = if (movie.isFavorite) {
-                getDrawable(requireContext(), R.drawable.ic_baseline_favorite_24)
+        binding.addToFavorites.setFavorite(movie.isFavorite)
+
+        binding.addToFavorites.setOnFavoriteClickListener {
+            if (movie.isFavorite) {
+                viewModel.unsetMovieAsFavorite(movie.id)
             } else {
-                getDrawable(requireContext(), R.drawable.ic_baseline_favorite_border_24)
-            }
-            text = if (movie.isFavorite) {
-                getString(R.string.remove_from_favorites)
-            } else {
-                getString(R.string.add_to_favorites)
-            }
-            setOnClickListener {
-                if (movie.isFavorite) {
-                    viewModel.unsetMovieAsFavorite(movie.id)
-                } else {
-                    viewModel.setMovieAsFavorite(movie.id)
-                }
+                viewModel.setMovieAsFavorite(movie.id)
             }
         }
     }
