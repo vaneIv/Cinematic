@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <set xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <alpha
+        android:duration="@android:integer/config_mediumAnimTime"
+        android:fromAlpha="1.0"
+        android:toAlpha="0.0" />
+
+    <!--Translate the view from a starting position at the top of the screen
+    down by 20% of the screen height. You slide down by 20% instead of 100% because
+    you want the downward slide to be subtle.-->
+    <translate
+        android:duration="@android:integer/config_mediumAnimTime"
+        android:fromYDelta="0.0"
+        android:toYDelta="20.0p" />
+
 </set>
