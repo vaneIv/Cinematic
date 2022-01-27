@@ -62,4 +62,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    // Override finish so you can apply the animations after the activity
+    // finishes.
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(R.anim.auth_main_enter, R.anim.auth_main_exit)
+    }
 }
