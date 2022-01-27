@@ -39,13 +39,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.transition.Fade
 import com.raywenderlich.cinematic.databinding.FragmentAuthBinding
 
 class AuthFragment : Fragment() {
+
     private val viewModel by activityViewModels<AuthViewModel>()
 
     private var _binding: FragmentAuthBinding? = null
     private val binding get() = _binding!!
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Setting up the exitTransition property of the Fragment to the Fade transition.
+        exitTransition = Fade()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
