@@ -34,13 +34,17 @@
 package com.raywenderlich.cinematic.login
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.transition.Fade
+import androidx.transition.Slide
+import androidx.transition.TransitionSet
 import com.google.android.material.transition.MaterialSharedAxis
+import com.raywenderlich.cinematic.R
 import com.raywenderlich.cinematic.databinding.FragmentAuthBinding
 
 class AuthFragment : Fragment() {
@@ -53,17 +57,31 @@ class AuthFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // MaterialSharedAxis takes two arguments:
-        //  1. The axis along which the animation should slide. In this case, you want to slide
-        // the view out on the horizontal axis, so you’ve provided the X-axis here.
-        //
-        //  2. A Boolean value indicating whether the transition should slide left or right along
-        // the X-axis. True indicates the view should slide left, while false indicates it
-        // should slide right. Here, you provide true because you want the layout to slide
-        // out to the left.
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true).apply {
-            duration = 1000
+        val logoSlideUp = Slide(Gravity.TOP).apply {
+            duration = 700
+
+            // *Next, we need to make sure that the Slide transition only runs on the logo
+            // TextView.
+            addTarget(R.id.logo)
         }
+
+        val materialSlideOut = MaterialSharedAxis(MaterialSharedAxis.X, true).apply {
+            duration = 1000
+
+            // *First, we want to make sure that the MaterialSharedAxis transition doesn’t run on
+            // the logo TextView. We want the logo TextView to slide up, not slide to the side and
+            // fade out.
+            excludeTarget(R.id.logo, true)
+        }
+
+        val exitTransitionSet = TransitionSet().apply {
+            addTransition(materialSlideOut)
+            addTransition(logoSlideUp)
+
+            ordering = TransitionSet.ORDERING_TOGETHER
+        }
+
+        exitTransition = exitTransitionSet
 
         // Using reenterTransition to fix the Fragments view slide in transition.
         // We want AuthFragment's view to slide in from the left rather then from the right.

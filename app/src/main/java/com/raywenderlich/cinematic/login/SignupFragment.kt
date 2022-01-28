@@ -34,13 +34,16 @@
 package com.raywenderlich.cinematic.login
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.transition.Fade
+import androidx.transition.Slide
 import com.google.android.material.transition.MaterialSharedAxis
+import com.raywenderlich.cinematic.R
 import com.raywenderlich.cinematic.databinding.FragmentSignupBinding
 
 class SignupFragment : Fragment() {
@@ -52,6 +55,8 @@ class SignupFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        enterTransition = Slide(Gravity.TOP).addTarget(R.id.signup_logo).setDuration(700)
 
         // To fix the white flash, you’ll need to define a returnTransition on the
         // SignupFragment.
