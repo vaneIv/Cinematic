@@ -64,6 +64,10 @@ class AuthFragment : Fragment() {
         exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true).apply {
             duration = 1000
         }
+
+        // Using reenterTransition to fix the Fragments view slide in transition.
+        // We want AuthFragment's view to slide in from the left rather then from the right.
+        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
     }
 
     override fun onCreateView(

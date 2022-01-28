@@ -40,6 +40,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.transition.Fade
+import com.google.android.material.transition.MaterialSharedAxis
 import com.raywenderlich.cinematic.databinding.FragmentSignupBinding
 
 class SignupFragment : Fragment() {
@@ -49,10 +50,15 @@ class SignupFragment : Fragment() {
     private var _binding: FragmentSignupBinding? = null
     private val binding get() = _binding!!
 
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//
-//    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // To fix the white flash, you’ll need to define a returnTransition on the
+        // SignupFragment.
+        returnTransition = MaterialSharedAxis(MaterialSharedAxis.X, false).apply {
+            duration = 1000
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
