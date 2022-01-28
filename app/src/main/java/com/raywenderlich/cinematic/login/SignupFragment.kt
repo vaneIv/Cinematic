@@ -44,6 +44,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.transition.*
 import com.google.android.material.transition.MaterialSharedAxis
 import com.raywenderlich.cinematic.R
+import com.raywenderlich.cinematic.TextSizeTransition
 import com.raywenderlich.cinematic.databinding.FragmentSignupBinding
 
 class SignupFragment : Fragment() {
@@ -70,6 +71,10 @@ class SignupFragment : Fragment() {
 
         val changeTransform = ChangeTransform()
         set.addTransition(changeTransform)
+
+        // Adding TextSizeTransition to the TransitionSet.
+        val textSize = TextSizeTransition()
+        set.addTransition(textSize)
 
         // 3. Last but not least, we assign set as your sharedElementEnterTransition.
         sharedElementEnterTransition = set
