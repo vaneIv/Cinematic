@@ -38,9 +38,9 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.transition.Fade
 import androidx.transition.Slide
 import com.google.android.material.transition.MaterialSharedAxis
 import com.raywenderlich.cinematic.R
@@ -78,6 +78,16 @@ class SignupFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.signUpButton.setOnClickListener {
             viewModel.onSignupPressed()
+        }
+        //  1. First, we register a callback with the onBackPressedDispatcher to notify us
+        // when the user taps the back button.
+        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner) {
+            //  2. Then, we toggle the isTransitionGroup flag on the root View of the layout to
+            // true so the animation will run as expected.
+            binding.root.isTransitionGroup = true
+            //  3. Finally, we pop the Fragment back stack to pop SignupFragment and show
+            // AuthFragment again.
+            parentFragmentManager.popBackStack()
         }
     }
 
