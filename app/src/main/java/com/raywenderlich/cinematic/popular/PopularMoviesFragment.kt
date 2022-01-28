@@ -36,7 +36,9 @@ package com.raywenderlich.cinematic.popular
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewAnimationUtils
 import android.view.ViewGroup
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.raywenderlich.cinematic.AnimationViewModel
@@ -49,6 +51,7 @@ import com.raywenderlich.cinematic.util.Events.Loading
 import com.raywenderlich.cinematic.util.MovieListClickListener
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.sharedViewModel
+import kotlin.math.hypot
 
 class PopularMoviesFragment : Fragment(R.layout.fragment_popular) {
 
@@ -93,6 +96,9 @@ class PopularMoviesFragment : Fragment(R.layout.fragment_popular) {
             popularAdapter.submitList(movies)
         })
 
+        //  This block checks the Boolean value of the LiveData object and triggers
+        // animateContentIn when it should animate. You’ll find the same structure in
+        // FavoriteMoviesFragment.
         animationViewModel.animatePopularEntranceLiveData.observe(
             viewLifecycleOwner,
             { shouldAnimatie ->
@@ -118,7 +124,38 @@ class PopularMoviesFragment : Fragment(R.layout.fragment_popular) {
     }
 
     private fun animateContentIn() {
-        // TODO: Animate content in!
+        //  doOnPreDraw will execute an action exactly once, right before drawing the View. It’s
+        // a handy way to ensure that the View is ready to be drawn before you execute an
+        // animation. You call it on the root of the layout binding because this animation
+        // should run on the whole layout.
+        binding.root.doOnPreDraw {
+            //  1. Get a shorter reference to the View you’re going to animate, which is the root
+            // View of the layout.
+            val view = binding.root
+            //  2. Declare the X coordinate of the center point of the clipping circle. This is the
+            // popular movies screen, so you want the circle to start from the left side of the
+            // screen, close to the popular icon. Therefore, you set the value to 0.
+            val centerX = 0
+            //  3. Declare the Y coordinate of the center point of the clipping circle. The circle
+            // should emanate out from the bottom-left of the screen, so the Y coordinate
+            // should be the full height of the View — that is, at the bottom of the screen.
+            val centerY = view.height
+
+            val finalRadius = hypot(
+                view.width.toDouble(),
+                view.height.toDouble()
+            )
+
+            val anim = ViewAnimationUtils.createCircularReveal(
+                view,
+                centerX,
+                centerY,
+                0f,
+                finalRadius.toFloat()
+            )
+            anim.duration = 600
+            anim.start()
+        }
     }
 
     override fun onDestroyView() {

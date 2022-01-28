@@ -36,7 +36,9 @@ package com.raywenderlich.cinematic.favorites
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewAnimationUtils
 import android.view.ViewGroup
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.raywenderlich.cinematic.AnimationViewModel
@@ -48,6 +50,7 @@ import com.raywenderlich.cinematic.util.Events
 import com.raywenderlich.cinematic.util.MovieListClickListener
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.sharedViewModel
+import kotlin.math.hypot
 
 class FavoriteMoviesFragment : Fragment(R.layout.fragment_favorites) {
     private var _binding: FragmentFavoritesBinding? = null
@@ -115,7 +118,26 @@ class FavoriteMoviesFragment : Fragment(R.layout.fragment_favorites) {
     }
 
     private fun animateContentIn() {
-        // TODO: Animate content in!
+        binding.root.doOnPreDraw {
+            val view = binding.root
+            val centerX = view.width
+            val centerY = view.height
+
+            val finalRadius = hypot(
+                view.width.toDouble(),
+                view.height.toDouble()
+            )
+
+            val anim = ViewAnimationUtils.createCircularReveal(
+                view,
+                centerX,
+                centerY,
+                0f,
+                finalRadius.toFloat()
+            )
+            anim.duration = 600
+            anim.start()
+        }
     }
 
     override fun onDestroyView() {
