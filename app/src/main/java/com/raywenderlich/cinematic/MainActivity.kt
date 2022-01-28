@@ -39,10 +39,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.raywenderlich.cinematic.databinding.ActivityMainBinding
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
 
+    private val viewModel: AnimationViewModel by viewModel()
     lateinit var binding: ActivityMainBinding
+    private var lastBackstackEntry = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +63,16 @@ class MainActivity : AppCompatActivity() {
                 R.id.movieDetailsFragment -> binding.bottomNav.visibility = View.GONE
                 else -> binding.bottomNav.visibility = View.VISIBLE
             }
+
+            val shouldTriggerFavoriteAnimation = lastBackstackEntry == R.id.popularMoviesFragment &&
+                    destination.id == R.id.favoriteMoviesFragment
+            val shouldTriggerPopularAnimation = lastBackstackEntry == R.id.favoriteMoviesFragment &&
+                    destination.id == R.id.popularMoviesFragment
+
+            viewModel.animateFavoriteEntranceLiveData.value = shouldTriggerFavoriteAnimation
+            viewModel.animatePopularEntranceLiveData.value = shouldTriggerPopularAnimation
+
+            lastBackstackEntry = destination.id
         }
     }
 

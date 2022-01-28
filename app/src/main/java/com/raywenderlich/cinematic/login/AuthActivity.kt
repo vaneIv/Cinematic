@@ -49,6 +49,7 @@ class AuthActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         supportFragmentManager.commit {
             replace(R.id.fragmentContainer, AuthFragment.newInstance())
         }

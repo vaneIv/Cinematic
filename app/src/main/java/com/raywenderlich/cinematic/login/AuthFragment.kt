@@ -57,34 +57,10 @@ class AuthFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val logoSlideUp = Slide(Gravity.TOP).apply {
-            duration = 700
-
-            // *Next, we need to make sure that the Slide transition only runs on the logo
-            // TextView.
-            addTarget(R.id.logo)
-        }
-
-        val materialSlideOut = MaterialSharedAxis(MaterialSharedAxis.X, true).apply {
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true).apply {
             duration = 1000
-
-            // *First, we want to make sure that the MaterialSharedAxis transition doesn’t run on
-            // the logo TextView. We want the logo TextView to slide up, not slide to the side and
-            // fade out.
-            excludeTarget(R.id.logo, true)
         }
-
-        val exitTransitionSet = TransitionSet().apply {
-            addTransition(materialSlideOut)
-            addTransition(logoSlideUp)
-
-            ordering = TransitionSet.ORDERING_TOGETHER
-        }
-
-        exitTransition = exitTransitionSet
-
-        // Using reenterTransition to fix the Fragments view slide in transition.
-        // We want AuthFragment's view to slide in from the left rather then from the right.
+        enterTransition = null
         reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
     }
 

@@ -38,6 +38,7 @@ import com.raywenderlich.cinematic.util.BaseViewModel
 import com.raywenderlich.cinematic.util.SingleLiveEvent
 
 class AuthViewModel : BaseViewModel() {
+
     private val _showMain = SingleLiveEvent<Unit>()
     val showMain = _showMain as LiveData<Unit>
 

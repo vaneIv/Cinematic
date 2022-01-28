@@ -55,10 +55,6 @@ class MovieDetailsViewModel constructor(private val repository: MoviesRepository
     private val _cast = MutableLiveData<List<Cast>>()
     val cast = _cast as LiveData<List<Cast>>
 
-    private var _shouldAnimate = true
-    val shouldAnimate: Boolean
-        get() = _shouldAnimate
-
     fun getMovieDetails(id: Int) {
         _events.value = Events.Loading
         viewModelScope.launch(Dispatchers.IO) {
@@ -85,14 +81,12 @@ class MovieDetailsViewModel constructor(private val repository: MoviesRepository
     fun setMovieAsFavorite(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.setFavorite(id)
-            _shouldAnimate = false
         }
     }
 
     fun unsetMovieAsFavorite(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.removeFavorite(id)
-            _shouldAnimate = false
         }
     }
 }

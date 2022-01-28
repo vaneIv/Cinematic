@@ -62,14 +62,10 @@ class MoviesDataRepository(
     }
 
     override suspend fun setFavorite(id: Int) {
-        //Simulated delay to demonstrate a long running task
-        // delay(2000)
         cacheStore.setFavorite(id)
     }
 
     override suspend fun removeFavorite(id: Int) {
-        //Simulated delay to demonstrate a long running task
-        // delay(2000)
         cacheStore.removeFavorite(id)
     }
 

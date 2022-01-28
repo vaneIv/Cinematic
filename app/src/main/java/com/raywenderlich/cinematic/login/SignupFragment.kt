@@ -58,21 +58,6 @@ class SignupFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val logoSlide = Slide(Gravity.TOP).addTarget(R.id.signup_logo).setDuration(1000)
-        val logoFade = Fade().addTarget(R.id.signup_logo).setDuration(2000)
-        val enterTransitionSet = TransitionSet().apply {
-            ordering = TransitionSet.ORDERING_TOGETHER
-            addTransition(logoSlide)
-            addTransition(logoFade)
-        }
-
-        enterTransition = enterTransitionSet
-        returnTransition = MaterialSharedAxis(MaterialSharedAxis.X, false).apply {
-            duration = 1000
-        }
-
-        // To fix the white flash, you’ll need to define a returnTransition on the
-        // SignupFragment.
         returnTransition = MaterialSharedAxis(MaterialSharedAxis.X, false).apply {
             duration = 1000
         }
@@ -91,16 +76,6 @@ class SignupFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.signUpButton.setOnClickListener {
             viewModel.onSignupPressed()
-        }
-        //  1. First, we register a callback with the onBackPressedDispatcher to notify us
-        // when the user taps the back button.
-        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner) {
-            //  2. Then, we toggle the isTransitionGroup flag on the root View of the layout to
-            // true so the animation will run as expected.
-            binding.root.isTransitionGroup = true
-            //  3. Finally, we pop the Fragment back stack to pop SignupFragment and show
-            // AuthFragment again.
-            parentFragmentManager.popBackStack()
         }
     }
 

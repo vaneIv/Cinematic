@@ -33,22 +33,15 @@
  */
 package com.raywenderlich.cinematic.details
 
-import android.animation.AnimatorInflater
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import coil.imageLoader
-import coil.request.ImageRequest
+import coil.load
 import coil.transform.BlurTransformation
 import com.raywenderlich.cinematic.R
 import com.raywenderlich.cinematic.databinding.FragmentDetailsBinding
@@ -88,12 +81,10 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_details) {
             viewModel.getMovieDetails(it)
             viewModel.getCast(it)
         }
-
         attachObservers()
     }
 
     private fun attachObservers() {
-
         viewModel.movie.observe(viewLifecycleOwner, { movie ->
             renderUi(movie)
         })
@@ -104,21 +95,18 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_details) {
     }
 
     private fun renderUi(movie: Movie) {
-        loadBackdrop(IMAGE_BASE + movie.backdropPath)
-        loadPoster(IMAGE_BASE + movie.posterPath)
+        binding.backdrop.load(IMAGE_BASE + movie.backdropPath) {
+            crossfade(true)
+            transformations(BlurTransformation(requireContext()))
+        }
+        binding.poster.load(IMAGE_BASE + movie.posterPath) {
+            crossfade(true)
+        }
 
         binding.title.text = movie.title
         binding.summary.text = movie.overview
         binding.ratingValue.text = movie.rating.toString()
         binding.movieRating.rating = movie.rating
-
-        if (viewModel.shouldAnimate) {
-            animateText(binding.summary)
-            animateText(binding.title)
-            animateText(binding.ratingValue)
-            animateText(binding.movieRating)
-            animateText(binding.overviewHeader)
-        }
 
         binding.addToFavorites.apply {
             icon = if (movie.isFavorite) {
@@ -139,69 +127,5 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_details) {
                 }
             }
         }
-    }
-
-    private fun loadPoster(posterUrl: String) {
-        val posterRequest = ImageRequest.Builder(requireContext())
-            .data(posterUrl)
-            .target {
-                binding.posterContainer.isVisible = true
-                binding.poster.setImageDrawable(it)
-                if (viewModel.shouldAnimate) animatePoster()
-            }.build()
-        requireContext().imageLoader.enqueue(posterRequest)
-    }
-
-    private fun loadBackdrop(backdropUrl: String) {
-        val posterRequest = ImageRequest.Builder(requireContext())
-            .data(backdropUrl)
-            .transformations(BlurTransformation(requireContext()))
-            .target {
-                binding.backdrop.isVisible = true
-                binding.backdrop.setImageDrawable(it)
-                if (viewModel.shouldAnimate) animateBackdrop()
-            }.build()
-        requireContext().imageLoader.enqueue(posterRequest)
-    }
-
-    private fun animateBackdrop() {
-        // Loads the animation file using AnimationUtils.loadAnimation().
-        val animation = AnimationUtils.loadAnimation(
-            requireContext(),
-            // Starts the animation on the backdrop.
-            R.anim.backdrop_animation
-        )
-
-        binding.backdrop.startAnimation(animation)
-    }
-
-    private fun animatePoster() {
-        // Loads the animator using AnimatorInflater.loadAnimator() and casts it to an
-        // AnimatorSet.
-        val animation = AnimatorInflater.loadAnimator(
-            requireContext(),
-            R.animator.poster_animator_set
-        ) as AnimatorSet
-
-        // Sets the posterContainer view as the target for the AnimatorSet and starts the
-        // animation.
-        animation.apply {
-            setTarget(binding.posterContainer)
-            start()
-        }
-    }
-
-    private fun animateText(view: View) {
-        // Loads the animation using AnimatorInflater.loadAnimator().
-        val textAnimation = AnimatorInflater.loadAnimator(
-            requireContext(),
-            R.animator.text_animation
-        ) as ObjectAnimator
-
-        // Sets the summary TextView as the target for the animation.
-        textAnimation.target = view
-
-        // Starts the animator.
-        textAnimation.start()
     }
 }

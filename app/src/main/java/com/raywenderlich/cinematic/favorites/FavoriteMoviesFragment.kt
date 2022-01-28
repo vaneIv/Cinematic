@@ -39,6 +39,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.raywenderlich.cinematic.AnimationViewModel
 import com.raywenderlich.cinematic.MoviesAdapter
 import com.raywenderlich.cinematic.R
 import com.raywenderlich.cinematic.databinding.FragmentFavoritesBinding
@@ -46,12 +47,14 @@ import com.raywenderlich.cinematic.model.Movie
 import com.raywenderlich.cinematic.util.Events
 import com.raywenderlich.cinematic.util.MovieListClickListener
 import org.koin.android.ext.android.inject
+import org.koin.android.viewmodel.ext.android.sharedViewModel
 
 class FavoriteMoviesFragment : Fragment(R.layout.fragment_favorites) {
     private var _binding: FragmentFavoritesBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: FavoriteMoviesViewModel by inject()
+    private val animationViewModel: AnimationViewModel by sharedViewModel()
     private val favoritesAdapter: MoviesAdapter by inject()
 
     override fun onCreateView(
@@ -85,8 +88,15 @@ class FavoriteMoviesFragment : Fragment(R.layout.fragment_favorites) {
     }
 
     private fun attachObservers() {
+
         viewModel.movies.observe(viewLifecycleOwner) { movies ->
             favoritesAdapter.submitList(movies)
+        }
+
+        animationViewModel.animateFavoriteEntranceLiveData.observe(viewLifecycleOwner) { shouldAnimate ->
+            if (shouldAnimate) {
+                animateContentIn()
+            }
         }
 
         viewModel.events.observe(viewLifecycleOwner) { event ->
@@ -102,6 +112,10 @@ class FavoriteMoviesFragment : Fragment(R.layout.fragment_favorites) {
                 }
             }
         }
+    }
+
+    private fun animateContentIn() {
+        // TODO: Animate content in!
     }
 
     override fun onDestroyView() {

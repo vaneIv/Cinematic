@@ -33,20 +33,12 @@
  */
 package com.raywenderlich.cinematic.details
 
-import android.animation.AnimatorInflater
-import android.animation.ObjectAnimator
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import coil.imageLoader
 import coil.load
-import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
-import com.raywenderlich.cinematic.R
 import com.raywenderlich.cinematic.databinding.ItemCastBinding
 import com.raywenderlich.cinematic.model.Cast
 import com.raywenderlich.cinematic.util.CastDiffCallback
@@ -71,30 +63,6 @@ class CastAdapter : ListAdapter<Cast, CastAdapter.CastViewHolder>(CastDiffCallba
                 crossfade(true)
                 transformations(CircleCropTransformation())
             }
-
-//            val context = binding.root.context
-//
-//            val imageRequest = ImageRequest.Builder(context)
-//                .data(IMAGE_BASE + cast.profilePath)
-//                .transformations(CircleCropTransformation())
-//                .target {
-//                    binding.castImage.setImageDrawable(it)
-//                    animateImage(binding.castImage)
-//                }.build()
-//
-//            context.imageLoader.enqueue(imageRequest)
         }
-
-//        private fun animateImage(imageView: ImageView) {
-//            // Loads the animation using AnimatorInflater.loadAnimator().
-//            val imageAnimation = AnimatorInflater.loadAnimator(
-//                binding.root.context,
-//                R.animator.image_animation
-//            ) as ObjectAnimator
-//
-//            imageAnimation.target = imageView
-//
-//            imageAnimation.start()
-//        }
     }
 }
