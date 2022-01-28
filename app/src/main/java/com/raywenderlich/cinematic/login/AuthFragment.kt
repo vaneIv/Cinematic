@@ -40,6 +40,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.transition.Fade
+import com.google.android.material.transition.MaterialSharedAxis
 import com.raywenderlich.cinematic.databinding.FragmentAuthBinding
 
 class AuthFragment : Fragment() {
@@ -52,8 +53,17 @@ class AuthFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Setting up the exitTransition property of the Fragment to the Fade transition.
-        exitTransition = Fade()
+        // MaterialSharedAxis takes two arguments:
+        //  1. The axis along which the animation should slide. In this case, you want to slide
+        // the view out on the horizontal axis, so you’ve provided the X-axis here.
+        //
+        //  2. A Boolean value indicating whether the transition should slide left or right along
+        // the X-axis. True indicates the view should slide left, while false indicates it
+        // should slide right. Here, you provide true because you want the layout to slide
+        // out to the left.
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true).apply {
+            duration = 1000
+        }
     }
 
     override fun onCreateView(
