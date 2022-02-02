@@ -43,9 +43,7 @@ import org.koin.android.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
 
-    private val viewModel: AnimationViewModel by viewModel()
     lateinit var binding: ActivityMainBinding
-    private var lastBackstackEntry = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,29 +55,12 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment
         val navController = navHostFragment.navController
         binding.bottomNav.setupWithNavController(navController)
-
         navController.addOnDestinationChangedListener { _, destination, _ ->
+
             when (destination.id) {
                 R.id.movieDetailsFragment -> binding.bottomNav.visibility = View.GONE
                 else -> binding.bottomNav.visibility = View.VISIBLE
             }
-
-            val shouldTriggerFavoriteAnimation = lastBackstackEntry == R.id.popularMoviesFragment &&
-                    destination.id == R.id.favoriteMoviesFragment
-            val shouldTriggerPopularAnimation = lastBackstackEntry == R.id.favoriteMoviesFragment &&
-                    destination.id == R.id.popularMoviesFragment
-
-            viewModel.animateFavoriteEntranceLiveData.value = shouldTriggerFavoriteAnimation
-            viewModel.animatePopularEntranceLiveData.value = shouldTriggerPopularAnimation
-
-            lastBackstackEntry = destination.id
         }
-    }
-
-    // Override finish so you can apply the animations after the activity
-    // finishes.
-    override fun finish() {
-        super.finish()
-        overridePendingTransition(R.anim.auth_main_enter, R.anim.auth_main_exit)
     }
 }

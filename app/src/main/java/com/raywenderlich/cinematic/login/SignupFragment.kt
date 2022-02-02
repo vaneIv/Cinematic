@@ -34,17 +34,11 @@
 package com.raywenderlich.cinematic.login
 
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.transition.*
-import com.google.android.material.transition.MaterialSharedAxis
-import com.raywenderlich.cinematic.R
-import com.raywenderlich.cinematic.TextSizeTransition
 import com.raywenderlich.cinematic.databinding.FragmentSignupBinding
 
 class SignupFragment : Fragment() {
@@ -53,32 +47,6 @@ class SignupFragment : Fragment() {
 
     private var _binding: FragmentSignupBinding? = null
     private val binding get() = _binding!!
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        returnTransition = MaterialSharedAxis(MaterialSharedAxis.X, false).apply {
-            duration = 1000
-        }
-
-        // 1. We define a new TransitionSet to hold our transitions.
-        val set = TransitionSet()
-
-        // 2. We then define a new instance of ChangeBounds and ChangeTransform and add
-        // them to the new TransitionSet.
-        val changeBounds = ChangeBounds()
-        set.addTransition(changeBounds)
-
-        val changeTransform = ChangeTransform()
-        set.addTransition(changeTransform)
-
-        // Adding TextSizeTransition to the TransitionSet.
-        val textSize = TextSizeTransition()
-        set.addTransition(textSize)
-
-        // 3. Last but not least, we assign set as your sharedElementEnterTransition.
-        sharedElementEnterTransition = set
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

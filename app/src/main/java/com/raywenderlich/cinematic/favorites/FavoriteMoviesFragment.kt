@@ -53,11 +53,11 @@ import org.koin.android.viewmodel.ext.android.sharedViewModel
 import kotlin.math.hypot
 
 class FavoriteMoviesFragment : Fragment(R.layout.fragment_favorites) {
+
     private var _binding: FragmentFavoritesBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: FavoriteMoviesViewModel by inject()
-    private val animationViewModel: AnimationViewModel by sharedViewModel()
     private val favoritesAdapter: MoviesAdapter by inject()
 
     override fun onCreateView(
@@ -79,30 +79,20 @@ class FavoriteMoviesFragment : Fragment(R.layout.fragment_favorites) {
                     )
                 )
             }
-
         })
-
         binding.favoriteMoviesList.apply {
             adapter = favoritesAdapter
         }
-
         viewModel.getFavoriteMovies()
         attachObservers()
     }
 
     private fun attachObservers() {
-
-        viewModel.movies.observe(viewLifecycleOwner) { movies ->
+        viewModel.movies.observe(viewLifecycleOwner, { movies ->
             favoritesAdapter.submitList(movies)
-        }
+        })
 
-        animationViewModel.animateFavoriteEntranceLiveData.observe(viewLifecycleOwner) { shouldAnimate ->
-            if (shouldAnimate) {
-                animateContentIn()
-            }
-        }
-
-        viewModel.events.observe(viewLifecycleOwner) { event ->
+        viewModel.events.observe(viewLifecycleOwner, { event ->
             when (event) {
                 is Events.Loading -> {
                     binding.progressBar.visibility = View.VISIBLE
@@ -114,30 +104,7 @@ class FavoriteMoviesFragment : Fragment(R.layout.fragment_favorites) {
                     binding.favoriteMoviesList.visibility = View.VISIBLE
                 }
             }
-        }
-    }
-
-    private fun animateContentIn() {
-        binding.root.doOnPreDraw {
-            val view = binding.root
-            val centerX = view.width
-            val centerY = view.height
-
-            val finalRadius = hypot(
-                view.width.toDouble(),
-                view.height.toDouble()
-            )
-
-            val anim = ViewAnimationUtils.createCircularReveal(
-                view,
-                centerX,
-                centerY,
-                0f,
-                finalRadius.toFloat()
-            )
-            anim.duration = 600
-            anim.start()
-        }
+        })
     }
 
     override fun onDestroyView() {

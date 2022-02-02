@@ -51,18 +51,9 @@ class AuthFragment : Fragment() {
 
     private val viewModel by activityViewModels<AuthViewModel>()
 
+
     private var _binding: FragmentAuthBinding? = null
     private val binding get() = _binding!!
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true).apply {
-            duration = 1000
-        }
-        enterTransition = null
-        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
