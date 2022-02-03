@@ -33,14 +33,7 @@ class MoviesRecyclerAdapter : RecyclerView.Adapter<MoviesRecyclerAdapter.MoviesV
 
     override fun onBindViewHolder(holder: MoviesViewHolder, position: Int) {
         holder.bind(items[position]) { movie ->
-//            // Fetches the index of the item you want to remove.
-//            val itemIndex = items.indexOf(movie)
-//            // Removes the item from the list.
-//            this.items.remove(movie)
-//
-//            // Notifies the adapter that you removed only one item at a given itemIndex.
-//            notifyItemRemoved(itemIndex)
-            val newIndex = (0..items.size).random()
+            val newIndex = position + 1
             this.items.add(newIndex, movie)
 
             notifyItemInserted(newIndex)

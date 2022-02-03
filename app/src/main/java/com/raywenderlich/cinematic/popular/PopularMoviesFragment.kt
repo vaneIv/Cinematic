@@ -79,6 +79,7 @@ class PopularMoviesFragment : Fragment(R.layout.fragment_popular) {
         })
         binding.popularMoviesList.apply {
             adapter = popularAdapter
+            itemAnimator = MyItemAnimator() // apply the animator
         }
         viewModel.getPopularMovies()
         attachObservers()
