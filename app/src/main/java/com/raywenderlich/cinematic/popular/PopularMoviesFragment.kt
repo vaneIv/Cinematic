@@ -39,13 +39,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.raywenderlich.cinematic.MoviesRecyclerAdapter
+import com.raywenderlich.cinematic.MoviesAdapter
 import com.raywenderlich.cinematic.R
 import com.raywenderlich.cinematic.databinding.FragmentPopularBinding
 import com.raywenderlich.cinematic.model.Movie
 import com.raywenderlich.cinematic.util.Events.Done
 import com.raywenderlich.cinematic.util.Events.Loading
 import com.raywenderlich.cinematic.util.MovieListClickListener
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class PopularMoviesFragment : Fragment(R.layout.fragment_popular) {
@@ -54,7 +57,7 @@ class PopularMoviesFragment : Fragment(R.layout.fragment_popular) {
     private val binding get() = _binding!!
 
     private val viewModel: PopularMoviesViewModel by inject()
-    private val popularAdapter = MoviesRecyclerAdapter()
+    private val popularAdapter: MoviesAdapter by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -87,7 +90,17 @@ class PopularMoviesFragment : Fragment(R.layout.fragment_popular) {
 
     private fun attachObservers() {
         viewModel.movies.observe(viewLifecycleOwner, { movies ->
-            popularAdapter.setItems(movies)
+            popularAdapter.submitList(movies.shuffled())
+
+            // Set up a fake operation within a coroutine. It delays for a second, then
+            // submits a shuffled() list of movies to the adapter three times.
+            GlobalScope.launch {
+                repeat(3) {
+                    delay(1000)
+
+                    popularAdapter.submitList(viewModel.movies.value?.shuffled() ?: emptyList())
+                }
+            }
         })
 
         viewModel.events.observe(viewLifecycleOwner, { event ->
